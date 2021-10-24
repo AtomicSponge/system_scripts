@@ -9,7 +9,6 @@ Workflow shell scripts to simplify some tasks.  See each script for more details
 | localbak.sh | Make a local backup of the current folder |
 | makedoc.sh | Build project documentation |
 | motd.sh | Message of the Day script |
-| mountvm.sh | VM mount manager for guestmount |
 | sysbak.sh | Run a system backup |
 
 ## Install Script

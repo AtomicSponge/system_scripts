@@ -18,7 +18,7 @@
 #  Default folder to install to
 DEFAULT_INSTALL_LOCATION="/usr/local/bin"
 #  Filenames to make symlinks to
-SCRIPT_FILE_NAMES=("comment_updater.sh" "localbak.sh" "makedoc.sh" "sysbak.sh" "mountvm.sh")
+SCRIPT_FILE_NAMES=("comment_updater.sh" "localbak.sh" "makedoc.sh" "sysbak.sh")
 #  Default folder to install MOTD
 MOTD_INSTALL_LOCATION="/etc/profile.d"
 #  MOTD script filename

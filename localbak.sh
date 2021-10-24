@@ -2,7 +2,7 @@
 ##################################################
 #  Filename:  localbak.sh
 #  By:  Matthew Evans
-#  Ver:  032721
+#  Ver:  082521
 #  See LICENSE.md for copyright information.
 ##################################################
 #  Script to create a local backup of the
@@ -22,8 +22,6 @@
 ##################################################
 #  Default folder to back up into
 BACKUP_FOLDER="_bak"
-#  Extension for backup folders
-BACKUP_EXTENSION="_bak"
 #  Special file to tell the script what to ignore
 IGNORE_FILE=".bakignore"
 
@@ -82,7 +80,7 @@ mkdir "$BACKUP_FOLDER"
 shopt -s dotglob
 for BACKUP_ITEM in "$CURRENT_PATH"/*; do
     #  Skip the item if it's either in the IGNORE_FILE or ends with BACKUP_FOLDER
-    if skip_check "${BACKUP_ITEM#$CURRENT_PATH/}" || [[ "$BACKUP_ITEM" =~ "$BACKUP_EXTENSION"$ ]]; then
+    if skip_check "${BACKUP_ITEM#$CURRENT_PATH/}" || [[ "$BACKUP_ITEM" =~ "$BACKUP_FOLDER"$ ]]; then
         continue
     fi
     cp -r "${BACKUP_ITEM#$CURRENT_PATH/}" "$BACKUP_FOLDER/${BACKUP_ITEM#$CURRENT_PATH/}"

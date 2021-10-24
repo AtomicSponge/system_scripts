@@ -2,14 +2,16 @@
 ##################################################
 #  Filename:  sysbak.sh
 #  By:  Matthew Evans
-#  Ver:  050121
+#  Ver:  082521
 #  See LICENSE.md for copyright information.
 ##################################################
+#
 #  System backup script
 #
 #  Requires:
 #  https://www.passwordstore.org/
 #  https://rclone.org/
+#
 ##################################################
 
 ##################################################
@@ -36,6 +38,7 @@ LOGGING_LEVEL="INFO"
 #  BACKUP_NAME="backup" - rclone backup name to use
 #  BACKUP_LIST=("test1" "test2") - list of folders to copy
 #  RCLONE_PASSWORD_COMMAND="pass rclone/config" - passwordstore command
+#
 ##################################################
 #  Make sure config file exists
 if [ -e "$BACKUP_CONFIG_LOCATION/$BACKUP_CONFIG_FILE" ]; then
@@ -103,14 +106,16 @@ if [ ! -e "$BACKUP_CONFIG_LOCATION/logs/" ]; then
 fi
 #  Run the rclone backups
 for ITEM in "${BACKUP_LIST[@]}"; do
+    #  Check if old log exists and remove
+    if [ -e "$BACKUP_CONFIG_LOCATION/logs/$ITEM.log" ]; then
+        rm "$BACKUP_CONFIG_LOCATION/logs/$ITEM.log"
+    fi
     #  Saftey check for folder
     if [ -d "$BACKUP_ROOT_LOCATION/$ITEM" ]; then
-        #  Check if old log exists and remove
-        if [ -e "$BACKUP_CONFIG_LOCATION/logs/$ITEM.log" ]; then
-            rm "$BACKUP_CONFIG_LOCATION/logs/$ITEM.log"
-        fi
         #  Start rclone process &
         rclone --log-file="$BACKUP_CONFIG_LOCATION/logs/$ITEM.log" --log-level "$LOGGING_LEVEL" --skip-links --ask-password=false --password-command "$RCLONE_PASSWORD_COMMAND" sync "$BACKUP_ROOT_LOCATION/$ITEM" "$BACKUP_NAME:$ITEM" &
+    else
+        echo "$BACKUP_ROOT_LOCATION/$ITEM not found!" > "$BACKUP_CONFIG_LOCATION/logs/$ITEM.log"
     fi
 done
 echo "User data backup started.  Results will be written in the logs."
