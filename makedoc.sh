@@ -76,10 +76,25 @@ exec 1>&3 2>&4  #  Restore stdout and stderr
 #  JSDoc documentation
 echo "Running JSDoc documentation generation..."
 
+#  Check if an old log exists and remove
+if [ -e "$CONFIG_LOCATION/$JSDOC_LOG_FILE" ]; then
+    echo "Deleting old log..."
+    rm "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
+fi
+
+echo "Logging to $CONFIG_LOCATION/$JSDOC_LOG_FILE"
+
+#  Switch logging to file, redirect stdout and stderr
+exec 3>&1 4>&2 &> "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
+
 for PROJECT in $(cat "$CONFIG_LOCATION/$JSDOC_LIST_FILE"); do
-    npx jsdoc "$PROJECTS_LOCATION/$PROJECT/$PROJECT.js"
+    pushd "$PROJECTS_LOCATION/$PROJECT"
+    npx jsdoc "$PROJECT".js
+    popd
     rsync -a "$PROJECTS_LOCATION/$PROJECT/$JSDOC_DOC_FOLDER/" "$DESTINATION_FOLDER/$PROJECT"
 done
+
+exec 1>&3 2>&4  #  Restore stdout and stderr
 
 echo "Done!"
 echo
