@@ -18,6 +18,10 @@
 #  Folder to copy documentation to:
 #  DESTINATION_FOLDER="$HOME/docs"
 #
+#  Then create text files listing the folders,
+#  one per line, for each project.
+#  ex:  doxygen.list / jdoc.list
+#
 ##################################################
 #  Script variables
 ##################################################
