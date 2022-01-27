@@ -2,7 +2,7 @@
 ##################################################
 #  Filename:  makedoc.sh
 #  By:  Matthew Evans
-#  Ver:  103021
+#  Ver:  012622
 #  See LICENSE.md for copyright information.
 ##################################################
 #  Script to build project documentation and
@@ -37,15 +37,27 @@ JSDOC_DOC_FOLDER="out"
 
 ##################################################
 
+#  Load config
+source "$CONFIG_LOCATION/$CONFIG_FILE"
+
+##################################################
+#  Parse arguments
+##################################################
+for ARGS in "$@"; do
+    #  Check if uninstall flag passed
+    if [ "$ARGS" = "--wipe" ]; then
+        rm -rf "$DESTINATION_FOLDER"
+        mkdir "$DESTINATION_FOLDER"
+        exit 0
+    fi
+done
+
 ##################################################
 #  Start main script
 ##################################################
 echo
 echo "*** BUILDING PROJECT DOCUMENTATION ***"
 echo
-
-#  Load config
-source "$CONFIG_LOCATION/$CONFIG_FILE"
 
 ##################################################
 #  Doxygen documentation
