@@ -8,7 +8,16 @@
 #  Script to build project documentation and
 #  update the main doc location.
 ##################################################
-
+#  Example config file:
+#
+#  Doc gen flags:
+#  DO_DOXYGEN="true"
+#  DO_JDOC="true"
+#  Project folder location:
+#  PROJECTS_LOCATION="$HOME/Projects"
+#  Folder to copy documentation to:
+#  DESTINATION_FOLDER="$HOME/docs"
+#
 ##################################################
 #  Script variables
 ##################################################
@@ -61,52 +70,55 @@ echo
 
 ##################################################
 #  Doxygen documentation
-echo "Running Doxygen documentation generation..."
+if [ "$DO_DOXYGEN" = true ]; then
+    echo "Running Doxygen documentation generation..."
 
-#  Check if an old log exists and remove
-if [ -e "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE" ]; then
-    echo "Deleting old log..."
-    rm "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
+    #  Check if an old log exists and remove
+    if [ -e "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE" ]; then
+        echo "Deleting old log..."
+        rm "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
+    fi
+
+    echo "Logging to $CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
+
+    #  Switch logging to file, redirect stdout and stderr
+    exec 3>&1 4>&2 &> "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
+
+    #  Read in the list of projects and process each
+    for PROJECT in $(cat "$CONFIG_LOCATION/$DOXYGEN_LIST_FILE"); do
+        pushd "$PROJECTS_LOCATION/$PROJECT"
+        doxygen "$(find $PROJECTS_LOCATION/$PROJECT -maxdepth 1 -type f -name "*$DOXYGEN_DOC_EXTENSION")"
+        popd
+        rsync -a "$PROJECTS_LOCATION/$PROJECT/$DOXYGEN_DOC_FOLDER/" "$DESTINATION_FOLDER/$PROJECT"
+    done
+
+    exec 1>&3 2>&4  #  Restore stdout and stderr
 fi
-
-echo "Logging to $CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
-
-#  Switch logging to file, redirect stdout and stderr
-exec 3>&1 4>&2 &> "$CONFIG_LOCATION/$DOXYGEN_LOG_FILE"
-
-#  Read in the list of projects and process each
-for PROJECT in $(cat "$CONFIG_LOCATION/$DOXYGEN_LIST_FILE"); do
-    pushd "$PROJECTS_LOCATION/$PROJECT"
-    doxygen "$(find $PROJECTS_LOCATION/$PROJECT -maxdepth 1 -type f -name "*$DOXYGEN_DOC_EXTENSION")"
-    popd
-    rsync -a "$PROJECTS_LOCATION/$PROJECT/$DOXYGEN_DOC_FOLDER/" "$DESTINATION_FOLDER/$PROJECT"
-done
-
-exec 1>&3 2>&4  #  Restore stdout and stderr
-
 ##################################################
 #  JSDoc documentation
-echo "Running JSDoc documentation generation..."
+if [ "$DO_JDOC" = true ]; then
+    echo "Running JSDoc documentation generation..."
 
-#  Check if an old log exists and remove
-if [ -e "$CONFIG_LOCATION/$JSDOC_LOG_FILE" ]; then
-    echo "Deleting old log..."
-    rm "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
+    #  Check if an old log exists and remove
+    if [ -e "$CONFIG_LOCATION/$JSDOC_LOG_FILE" ]; then
+        echo "Deleting old log..."
+        rm "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
+    fi
+
+    echo "Logging to $CONFIG_LOCATION/$JSDOC_LOG_FILE"
+
+    #  Switch logging to file, redirect stdout and stderr
+    exec 3>&1 4>&2 &> "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
+
+    for PROJECT in $(cat "$CONFIG_LOCATION/$JSDOC_LIST_FILE"); do
+        pushd "$PROJECTS_LOCATION/$PROJECT"
+        npx jsdoc "$PROJECT".js
+        popd
+        rsync -a "$PROJECTS_LOCATION/$PROJECT/$JSDOC_DOC_FOLDER/" "$DESTINATION_FOLDER/$PROJECT"
+    done
+
+    exec 1>&3 2>&4  #  Restore stdout and stderr
 fi
-
-echo "Logging to $CONFIG_LOCATION/$JSDOC_LOG_FILE"
-
-#  Switch logging to file, redirect stdout and stderr
-exec 3>&1 4>&2 &> "$CONFIG_LOCATION/$JSDOC_LOG_FILE"
-
-for PROJECT in $(cat "$CONFIG_LOCATION/$JSDOC_LIST_FILE"); do
-    pushd "$PROJECTS_LOCATION/$PROJECT"
-    npx jsdoc "$PROJECT".js
-    popd
-    rsync -a "$PROJECTS_LOCATION/$PROJECT/$JSDOC_DOC_FOLDER/" "$DESTINATION_FOLDER/$PROJECT"
-done
-
-exec 1>&3 2>&4  #  Restore stdout and stderr
 
 echo "Done!"
 echo
