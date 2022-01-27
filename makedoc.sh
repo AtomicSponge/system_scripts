@@ -57,7 +57,7 @@ source "$CONFIG_LOCATION/$CONFIG_FILE"
 #  Parse arguments
 ##################################################
 for ARGS in "$@"; do
-    #  Check if uninstall flag passed
+    #  Wipe generated documentation
     if [ "$ARGS" = "--wipe" ]; then
         rm -rf "$DESTINATION_FOLDER"
         mkdir "$DESTINATION_FOLDER"
