@@ -6,3 +6,4 @@ Kept for archival, but discontinued and removed from the installer.
 | -------- | ----------- | ------ |
 | mountvm.sh | VM mount manager for guestmount | No longer using |
 | makedoc.sh | Document generator script | Replaced by [docbuilder](https://github.com/wtfsystems/docbuilder) |
+| comment_updater.sh | Update initial header in source code files | Replaced by [comment_updater](https://github.com/wtfsystems/comment_updater) |
