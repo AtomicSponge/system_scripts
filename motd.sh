@@ -14,7 +14,7 @@
 #  Location of the quotes file
 #  Format:
 #  QUOTES=("quote1" "quote2")
-QUOTES_FILE="$HOME/.config/system_scripts/quotes"
+QUOTES_FILE="$HOME/.system_scripts/quotes"
 #  Define some colors
 FG_GREEN="\033[0;32m"
 FG_RED="\033[0;31m"
@@ -29,8 +29,8 @@ RESET="\033[0m"
 neofetch
 
 #  Display last time backup was ran
-if [ -e "$HOME"/.config/system_scripts/sysbak/lastrun ]; then
-    LASTRUN=$( cat "$HOME"/.config/system_scripts/sysbak/lastrun )
+if [ -e "$HOME"/.sysbak/lastrun ]; then
+    LASTRUN=$( cat "$HOME"/.sysbak/lastrun )
     CURRENT_TIME=$( date +"%s" )
     BACKUP_TIME=$( date --date="$LASTRUN" +"%s" )
     ELAPSED_TIME=$( expr "$CURRENT_TIME" - "$BACKUP_TIME" )
@@ -64,4 +64,4 @@ fi
 ##################################################
 #  Set environment variables
 ##################################################
-source "$HOME/.config/system_scripts/envvars"
+source "$HOME/.system_scripts/envvars"
