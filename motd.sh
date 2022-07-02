@@ -28,6 +28,8 @@ RESET="\033[0m"
 #  Run neofetch, https://github.com/dylanaraps/neofetch
 neofetch
 
+echo -e "${FG_YELLOW}$(date)"
+
 #  Display last time backup was ran
 if [ -e "$HOME"/.sysbak/lastrun ]; then
     LASTRUN=$( cat "$HOME"/.sysbak/lastrun )
